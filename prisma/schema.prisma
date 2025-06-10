@@ -34,6 +34,8 @@ model User {
   email String @unique
 
   profile Profile? //One-to-One
+  order Order[] //One-to-Many
+
 
   @@map("users")
 }
@@ -57,6 +59,21 @@ model Profile {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Order {
+  id String @id @default(uuid())
+  total Float 
+
+  userId String 
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("orders")
 }
 
 enum Category {
