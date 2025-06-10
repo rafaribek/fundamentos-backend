@@ -23,6 +23,8 @@ model Product {
   category    Category
   tags        String[]
 
+  orderItem OrderItem[]//one-to-many
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
@@ -35,6 +37,7 @@ model User {
 
   profile Profile? //One-to-One
   order Order[] //One-to-Many
+  
 
 
   @@map("users")
@@ -69,11 +72,27 @@ model Order {
 
   userId String 
   user   User   @relation(fields: [userId], references: [id])
+  orderItem OrderItem[]//many-to-one
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
   @@map("orders")
+}
+
+model OrderItem {
+  orderId String
+  productId String
+  quantity Float
+
+  order Order @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@id([orderId, productId])
+  @@map("order_Items")
 }
 
 enum Category {
