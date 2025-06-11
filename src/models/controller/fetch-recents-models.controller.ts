@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { FetchRecentModelsService } from "./fetch-recents-models.service";
+import { FetchRecentModelsService } from "../service/fetch-recents-models.service";
 
 
 @Controller('/models')

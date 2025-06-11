@@ -1,7 +1,8 @@
 import { Body, Controller, HttpCode, Patch } from "@nestjs/common";
+import { ZodValidationPipe } from "src/pipes/zod-validation-pipe";
+import { UpdateAvailableProductService } from "src/product/service/update-available-product.service";
 import { z } from "zod";
-import { ZodValidationPipe } from "./pipes/zod-validation-pipe";
-import { UpdateAvailableProductService } from "./update-available-product.service";
+
 
 const updateAvailableProductBodySchema = z.object({
   ids: z.array(z.string()).min(1, "At least one ID must be provided"),

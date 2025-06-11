@@ -1,8 +1,10 @@
 import { Controller, Patch, Param, Body, Put, HttpCode } from '@nestjs/common';
-import { EditProductService } from './edit-product.service';
+
 import { z } from 'zod';
 import { Category } from '@prisma/client';
-import { ZodValidationPipe } from './pipes/zod-validation-pipe';
+import { EditProductService } from 'src/product/service/edit-product.service';
+import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe';
+
 
 const editProductBodySchema = z.object({
       name: z.string(),

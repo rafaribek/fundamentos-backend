@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { GetProductByIdService } from "./get-product-by-id.service";
 
+
 @Controller('/products/:id')
 export class GetProductByIdController {
   constructor(private getProductById: GetProductByIdService) {}

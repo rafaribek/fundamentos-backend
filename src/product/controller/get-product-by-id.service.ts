@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ProductsRepository } from "./products.repository";
+import { ProductsRepository } from "../repository/products.repository";
 import { Category } from "@prisma/client";
 
 export interface Product {
@@ -15,50 +15,26 @@ export interface Product {
   updatedAt: string | Date | null | undefined;
 }
 
-interface EditProductServiceRequest {
-  name: string;
-  description?: string;
-  price: number;
-  inStock: number;
-  isAvailable: boolean;
-  category: Category;
-  tags: string[];
+interface GetProductByIdServiceRequest {
   id: string;
 }
 
-type EditProductServiceResponse = {
+type GetProductByIdServiceResponse = {
   product: Product;
 }
 
 @Injectable()
-export class EditProductService {
+export class GetProductByIdService {
   constructor(private productsRepository: ProductsRepository) {}
 
   async execute({
-    name,
-    description,
-    price,
-    inStock,
-    isAvailable,
-    category,
-    tags,
     id,
-  }: EditProductServiceRequest): Promise<EditProductServiceResponse> {
+  }: GetProductByIdServiceRequest): Promise<GetProductByIdServiceResponse> {
     const product = await this.productsRepository.findById(id);
 
     if (!product) {
       throw new Error("Product not found");
     }
-
-    product.name = name;
-    product.description = description;
-    product.price = price;
-    product.inStock = inStock;
-    product.isAvailable = isAvailable;
-    product.category = category;
-    product.tags = tags;
-
-    await this.productsRepository.save(product);
 
     const newProduct: Product = {
       id: product.id?.toString() || "",
