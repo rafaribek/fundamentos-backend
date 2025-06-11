@@ -1,13 +1,15 @@
-import { Controller, Delete, Param } from '@nestjs/common';
-import { DeleteProductService } from './delete-product.service';
+import { Controller, Delete, Get, HttpCode, Param } from "@nestjs/common";
+import { DeleteProductService } from "./delete-product.service";
 
-@Controller('/products')
+@Controller('/products/:id')
 export class DeleteProductController {
-  constructor(private deleteProductService: DeleteProductService) {}
+  constructor(private deleteProduct: DeleteProductService) {}
 
-  @Delete('/:id')
-  async handle(@Param('id') id: string) {
-    await this.deleteProductService.execute(id);
-    return { message: 'Product deleted successfully' };
+  @Delete()
+  @HttpCode(204)
+  async handle(@Param("id") id: string) {
+    await this.deleteProduct.execute({
+      id,
+    });
   }
 }

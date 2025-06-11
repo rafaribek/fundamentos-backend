@@ -1,15 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
-import { FetchRecentProductService } from './fetch-recent-product.service';
+import { Controller, Get } from "@nestjs/common";
+import { FetchRecentProductsService } from "./fetch-recent-product.service";
 
 
 @Controller('/products')
-export class FetchRecentsProductsController {
-  constructor(private fetchRecents: FetchRecentProductService) {}
+export class FetchRecentProductsController {
+  constructor(private fetchRecentProducts: FetchRecentProductsService) {}
 
-  @Get('/recents')
+  @Get()
   async handle() {
-    const products = await this.fetchRecents.execute();
-    return { products };
+    const products = await this.fetchRecentProducts.execute();
+
+    return {
+      products
+    };
   }
 }
-

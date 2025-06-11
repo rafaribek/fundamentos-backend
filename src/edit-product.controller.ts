@@ -1,7 +1,8 @@
-import { Controller, Patch, Param, Body } from '@nestjs/common';
+import { Controller, Patch, Param, Body, Put, HttpCode } from '@nestjs/common';
 import { EditProductService } from './edit-product.service';
 import { z } from 'zod';
 import { Category } from '@prisma/client';
+import { ZodValidationPipe } from './pipes/zod-validation-pipe';
 
 const editProductBodySchema = z.object({
       name: z.string(),
@@ -12,13 +13,43 @@ const editProductBodySchema = z.object({
       category: z.enum([Category.ELETRONICS, Category.FOOD, Category.HOME, Category.OTHER]),
       tags: z.array(z.string()),
 })
-@Controller('/products')
-export class EditProductController {
-  constructor(private editProductService: EditProductService) {}
+const bodyValidationPipe = new ZodValidationPipe(editProductBodySchema);
 
-  @Patch('/:id')
-  async handle(@Param('id') id: string, @Body() body: any) {
-    const product = await this.editProductService.execute(id, body);
-    return { product };
+type EditProductBodySchema = z.infer<typeof editProductBodySchema>;
+
+@Controller('/products/:id')
+export class EditProductController {
+  constructor(private editProduct: EditProductService) {}
+
+  @Put()
+  @HttpCode(204)
+  async handle(
+    @Body(bodyValidationPipe) body: EditProductBodySchema,
+    @Param("id") id: string,
+  ) {
+    const {
+      name,
+      description,
+      price,
+      inStock,
+      isAvailable,
+      category,
+      tags,
+    } = body;
+
+    const product = await this.editProduct.execute({
+      name,
+      description,
+      price,
+      inStock,
+      isAvailable,
+      category,
+      tags,
+      id,
+    });
+
+    return {
+      product
+    };
   }
 }

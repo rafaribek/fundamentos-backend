@@ -1,19 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { ProductsRepository } from "./products.repository";
+
+interface UpdateAvailableProductServiceRequest {
+  isAvailable: boolean;
+  id: string;
+}
 
 @Injectable()
 export class UpdateAvailableProductService {
-  async execute(id: string, available: boolean): Promise<any> {
-    const productExists = true;
+  constructor(private productsRepository: ProductsRepository) {}
 
-    if (!productExists) {
-      throw new NotFoundException('Product not found');
+  async execute({
+    id,
+    isAvailable,
+  }: UpdateAvailableProductServiceRequest): Promise<void> {
+    const product = await this.productsRepository.findById(id);
+
+    if (!product) {
+      throw new Error("Product not found");
     }
 
-    const updatedProduct = {
-      id,
-      available,
-    };
+    product.isAvailable = isAvailable;
 
-    return updatedProduct;
+    await this.productsRepository.save(product);
   }
 }

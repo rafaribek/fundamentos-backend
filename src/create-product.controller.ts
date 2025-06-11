@@ -16,42 +16,40 @@ import { Category } from "@prisma/client";
     
     });
 
-    const bodyValidationPipe = new ZodValidationPipe(createProductBodySchema);
-    type createProductBodySchema = z.infer<typeof createProductBodySchema>;
+const bodyValidationPipe = new ZodValidationPipe(createProductBodySchema);
 
+type CreateProductBodySchema = z.infer<typeof createProductBodySchema>;
 
-    @Controller('/products')
-    export class CreateProductController {
-        constructor(private createProduct: CreateProductService){}
+@Controller('/products')
+export class CreateProductController {
+  constructor(private createProduct: CreateProductService) {}
 
+  @Post()
+  @HttpCode(201)
+  async handle(@Body(bodyValidationPipe) body: CreateProductBodySchema) {
+    const {
+      name,
+      description,
+      price,
+      inStock,
+      isAvailable,
+      category,
+      tags,
+    } = body;
 
-    @Post()
-      @HttpCode(201)
-      async handle(@Body(bodyValidationPipe) body: createProductBodySchema){
-        const{
-          name,
-          description,
-          price,
-          inStock,
-          isAvailable,
-          category,
-          tags,
+    const product = await this.createProduct.execute({
+      name,
+      description,
+      price,
+      inStock,
+      isAvailable,
+      category,
+      tags,
+    });
 
-        } = body;
-
-
-       const product =  await this.createProduct.execute({  
-          name,
-          description,
-          price,
-          inStock,
-          isAvailable,
-          category,
-          tags,
-
-        })
-        return {product}  
-      }
-
-    }
+    return {
+      product
+    };
+  }
+}
   

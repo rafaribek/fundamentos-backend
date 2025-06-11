@@ -1,13 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { GetProductByIdService } from './get-product-by-id.service';
+import { Controller, Get, Param } from "@nestjs/common";
+import { GetProductByIdService } from "./get-product-by-id.service";
 
-@Controller('/products')
+@Controller('/products/:id')
 export class GetProductByIdController {
-  constructor(private getProductByIdService: GetProductByIdService) {}
+  constructor(private getProductById: GetProductByIdService) {}
 
-  @Get('/:id')
-  async handle(@Param('id') id: string) {
-    const product = await this.getProductByIdService.execute(id);
-    return { product };
+  @Get()
+  async handle(@Param("id") id: string) {
+    const product = await this.getProductById.execute({
+      id,
+    });
+
+    return {
+      product
+    };
   }
 }
